@@ -2,11 +2,15 @@
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using Renci.SshNet;
+using Microsoft.VisualBasic.Logging;
 
 namespace KCureDataAccess
 {
     public class Controller
     {
+        //
+        Store store;
+        //
         Observer observer;
         //
         CustomSftpClient sftpReqeustedDataClient;
@@ -35,19 +39,40 @@ namespace KCureDataAccess
             string page = (string)objJson["page"];
             string action = (string)objJson["action"];
             //
-            if (page == "login")
-            {
-                if(action == "page")
+           if(action == "page")
+           {
+                if (page == "login")
                 {
+
                     var objData = objJson["data"];
                     string id = (string)objData["id"];
                     string password = (string)objData["password"];
                     Console.WriteLine("Debug>>> (id) : " + id);
                     Console.WriteLine("Debug>>> (password) : " + password);
-                    observer.Send("formMain", "page", "index", null);
+                    //
+                    store = new Store();
+                    if (Login(id, password))
+                    {
+                        store.id = id;
+                        observer.Send("formMain", "page", "02-index", null);
+                    }
+                    //
+                }
+                else
+                {
+                    string dest = (string)objJson["dest"];
+                    observer.Send("formMain", "page", dest, null);
                 }
             }
         }
+
+
+        public bool Login(string id, string password)
+        {
+            return true;
+        }
+
+
 
         public void Listener(string target, string action, string message, dynamic data)
         {

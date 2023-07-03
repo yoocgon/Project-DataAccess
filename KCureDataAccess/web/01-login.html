@@ -1,0 +1,86 @@
+
+<style>
+
+    .wrapper {
+        display: grid;
+        grid-template-areas:
+            "left righ";
+        grid-template-columns: 40% 60%;
+        grid-template-rows: 100%;
+        width: 100%;
+        height: 100%;
+        background-color: dodgerblue;
+    }
+
+    .left {
+        grid-area: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .right {
+        grid-area: righ;
+        background-image: url("img/login2.jpg");
+        background-size: cover;
+        background-position: center;
+        background-color: navy;
+    }
+
+    .box-login {
+        width: 10em;
+        background-color: white;
+        padding: 1em;
+        margin: 1em;
+        border-radius: 1em;
+    }
+
+    input {
+        width: 100%;
+    }
+</style>
+
+
+<div class="wrapper">
+    <div class="left">
+        <div class="box-login">
+            <br />
+            <div> <input id="id" type="text" placeholder="id" /> </div>
+            <br />
+            <div> <input id="password" type="text" placeholder="password" /> </div>
+            <br />
+            <div> <input type="button" value="login" onclick='login()' /> </div>
+            <br />
+        </div>
+    </div>
+    <div class="right"></div>
+</div>
+
+
+<script>
+
+        function login(){
+            //
+            let id = document.getElementById("id").value;
+            let password = document.getElementById("password").value;
+            //
+            let data = {
+                id: id,
+                password: password
+            };
+            //
+            let jsonData = JSON.stringify(data);
+            jsonData = JSON.stringify(
+                {
+                    page: 'login',
+                    action: 'page',
+                    data: data
+                }
+            );
+            //
+            let objData = JSON.parse(jsonData);
+            window.chrome.webview.postMessage(objData);
+        }
+
+</script>
+

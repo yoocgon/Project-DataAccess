@@ -9,6 +9,7 @@ namespace KCureDataAccess
         public Observer observer;
         public Controller controller;
         public Config config;
+        public Store store;
 
         public MainForm()
         {
@@ -24,7 +25,7 @@ namespace KCureDataAccess
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            webView2.Source = new Uri(config.webRoot + "login.html");
+            webView2.Source = new Uri(config.webRoot + "01-login.html");
             webView2.WebMessageReceived += WebView2_WebMessageReceived;
         }
 
