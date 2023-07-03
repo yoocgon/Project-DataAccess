@@ -1,0 +1,49 @@
+
+<h1 id="hello">Hello World</h1>
+<input type="button" value="이동" onclick="moveTo('test')" />
+
+<script>
+
+    // csharp로 오브젝트 송신
+    async function sendData() {
+        //
+        let data = [
+            { name: "John", age: "25" },
+            { name: "Jane", age: "30" },
+            { name: "Bob", age: "35" }
+        ];
+        //
+        let jsonData = JSON.stringify(data);
+        jsonData = JSON.stringify(
+            {
+                type: 'data',
+                dataType: 'array',
+                data: data
+            }
+        );
+        //
+        let objData = JSON.parse(jsonData)
+        window.chrome.webview.postMessage(objData);
+    }
+
+    // 오브젝트 수신
+    function addProducts(data) {
+        console.table(data);
+        alert(JSON.stringify(data));
+    }
+
+    //
+    function moveTo(page) {
+        //
+        let data = {
+            type: 'page',
+            data: page
+        };
+!       //
+        window.chrome.webview.postMessage(data);
+    }
+
+    //
+    sendData()
+
+</script>
