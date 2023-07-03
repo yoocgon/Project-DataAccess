@@ -32,26 +32,29 @@ namespace KCureDataAccess
         {
             var objJson = JsonSerializer.Deserialize<JsonObject>(strJson);
             //
-            string strTpye = (string)objJson["type"];
+            string page = (string)objJson["page"];
+            string action = (string)objJson["action"];
             //
-            if (strTpye == "data")
+            if (page == "login")
             {
-                string strDataType = (string)objJson["dataType"];
-                var objData = objJson["data"];
-            }
-            else if (strTpye == "page")
-            {
-                string page = (string)objJson["data"];
-                if (page == "test")
+                if(action == "page")
                 {
-                    observer.Send("page", "test", "form1", null);
+                    var objData = objJson["data"];
+                    string id = (string)objData["id"];
+                    string password = (string)objData["password"];
+                    Console.WriteLine("Debug>>> (id) : " + id);
+                    Console.WriteLine("Debug>>> (password) : " + password);
+                    observer.Send("formMain", "page", "index", null);
                 }
             }
         }
 
-        public void Listen(string type, string message, dynamic data)
+        public void Listener(string target, string action, string message, dynamic data)
         {
-            Console.WriteLine("");
+            Console.WriteLine("\nDebug>>> Controller Listener");
+            Console.WriteLine("(target) " + target);
+            Console.WriteLine("(action) " + action);
+            Console.WriteLine("(message) " + message);
         }
     }
 }

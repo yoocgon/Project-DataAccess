@@ -1,49 +1,180 @@
 
-<h1 id="hello">Hello World</h1>
-<input type="button" value="이동" onclick="moveTo('test')" />
+<style>
+
+    ul, #myUL {
+        list-style-type: none;
+    }
+
+    #myUL {
+        margin: 0;
+        padding: 0;
+    }
+
+    .caret {
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+    .caret-down::before {
+        transform: rotate(90deg);
+    }
+
+    .nested {
+        display: none;
+    }
+
+    .active {
+        display: block;
+    }
+</style>
+
+
+<!--<h1 id="hello">Hello World</h1>-->
+<!--<input type="button" value="이동" onclick="moveTo('test')" />-->
+
+<!--<ul id="myUL">
+    <li>
+        <span class="caret">Beverages</span>
+        <ul class="nested">
+            <li>Water</li>
+            <li>Coffee</li>
+            <li>
+                <span class="caret">Tea</span>
+                <ul class="nested">
+                    <li>Black Tea</li>
+                    <li>White Tea</li>
+                    <li>
+                        <span class="caret">Green Tea</span>
+                        <ul class="nested">
+                            <li>Sencha</li>
+                            <li>Gyokuro</li>
+                            <li>Matcha</li>
+                            <li>Pi Lo Chun</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>-->
+
+
+<ul id="myUL2"></ul>
+
 
 <script>
 
-    // csharp로 오브젝트 송신
-    async function sendData() {
-        //
-        let data = [
-            { name: "John", age: "25" },
-            { name: "Jane", age: "30" },
-            { name: "Bob", age: "35" }
-        ];
-        //
-        let jsonData = JSON.stringify(data);
-        jsonData = JSON.stringify(
-            {
-                type: 'data',
-                dataType: 'array',
-                data: data
-            }
-        );
-        //
-        let objData = JSON.parse(jsonData)
-        window.chrome.webview.postMessage(objData);
-    }
-
-    // 오브젝트 수신
-    function addProducts(data) {
-        console.table(data);
-        alert(JSON.stringify(data));
-    }
+    var dataTreeView = [
+        { name: "Beverages", path: "Beverages", type: "folder" },
+        { name: "Water", path: "Beverages/Water", type: "folder" },
+        { name: "Coffee", path: "Beverages/Coffee.txt", type: "file" },
+        { name: "Tea", path: "Beverages/Tea", type: "folder" },
+        { name: "Black Tea", path: "Beverages/Tea/Black Tea.txt", type: "file" },
+        { name: "White Tea", path: "Beverages/Tea/White Tea.txt", type: "file" },
+        { name: "Green Tea", path: "Beverages/Tea/Green Tea", type: "folder" },
+        { name: "Sencha", path: "Beverages/Tea/Green Tea/Sencha.txt", type: "file" },
+        { name: "Gyokuro", path: "Beverages/Tea/Green Tea/Gyokuro.txt", type: "file" },
+        { name: "Matcha", path: "Beverages/Tea/Green Tea/Matcha.txt", type: "file" },
+        { name: "Pi Lo Chun", path: "Beverages/Tea/Green Tea/Pi Lo Chun.txt", type: "file" }
+    ];
 
     //
-    function moveTo(page) {
+    function renderTreeView(dataTreeView) {
         //
-        let data = {
-            type: 'page',
-            data: page
-        };
-!       //
-        window.chrome.webview.postMessage(data);
+        let folders = dataTreeView.filter(item => item.type == "folder");
+        let files = dataTreeView.filter(item => item.type == "files");
+        //
+        files.forEach(function (file) {
+            file = file.replaceAll("\\", "/");
+            let aryTemp = file.path.split(".");
+            let parent = aryTemp[0].replaceAll("/" + file.name, "");
+            file.parent = parent;
+        });
+        //
+        let htmlFolder = `
+            <li>
+                <span class="caret">{name}</span>
+                <ul class="nested">{files}</ul>
+            </li>
+         `;
+        //
+        let htmlResult = "";
+        //
+        folders.forEach(function (folder) {
+            let strFolder = htmlFolder.replaceAll("{name}", folder.name);
+            let aryChild = files.filter(item => item.parent == folder.path);
+            let strFile = "";
+            aryChild.forEach(function (child) {
+                strFile = strFile + "<li>" + child.name + "</li>"
+            });
+            strFolder = strFolder.replaceAll("{files}", strFile); 
+            htmlResult = htmlResult + strFolder;
+        });
+        //
+        alert(htmlResult);
+        document.getElementById("myUL2").innerHTML = htmlResult;
+        //
+        var toggler = document.getElementsByClassName("caret");
+        //
+        var i;
+        for (i = 0; i < toggler.length; i++)
+        {
+            toggler[i].addEventListener("click", function () {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+                this.classList.toggle("caret-down");
+            });
+        }
     }
 
-    //
-    sendData()
+    renderTreeView(dataTreeView);
+
+    //// csharp로 오브젝트 송신
+    //async function sendData() {
+    //    //
+    //    let data = [
+    //        { name: "John", age: "25" },
+    //        { name: "Jane", age: "30" },
+    //        { name: "Bob", age: "35" }
+    //    ];
+    //    //
+    //    let jsonData = JSON.stringify(data);
+    //    jsonData = JSON.stringify(
+    //        {
+    //            type: 'data',
+    //            dataType: 'array',
+    //            data: data
+    //        }
+    //    );
+    //    //
+    //    let objData = JSON.parse(jsonData)
+    //    window.chrome.webview.postMessage(objData);
+    //}
+
+    //// 오브젝트 수신
+    //function addProducts(data) {
+    //    console.table(data);
+    //    alert(JSON.stringify(data));
+    //}
+
+    ////
+    //function moveTo(page) {
+    //    //
+    //    let data = {
+    //        type: 'page',
+    //        data: page
+    //    };
+    //    //
+    //    window.chrome.webview.postMessage(data);
+    //}
+
+    ////
+    //sendData()
 
 </script>

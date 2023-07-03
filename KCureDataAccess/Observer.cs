@@ -3,24 +3,29 @@ namespace KCureDataAccess
 {
     public class Observer
     {
-        public MainForm form1;
+        public MainForm formMain;
         public Controller controller;
 
-        public void Send(String type, String message, String target, dynamic data)
+        public void Send(String target, String action, String message, dynamic data)
         {
-            if(target == "form1")
+            Console.WriteLine("\nDebug>>> Observer Sender");
+            Console.WriteLine("(target) " + target);
+            Console.WriteLine("(action) " + action);
+            Console.WriteLine("(message) " + message);
+
+            if (target == "formMain")
             {
-                form1.Listen(type, message, data);
+                formMain.Listener(target, action, message, data);
             }
             else if(target == "controller")
             {
-                controller.Listen(type, message, data);
+                controller.Listener(target, action, message, data);
             }
         }
 
-        public void Add(MainForm form1)
+        public void Add(MainForm formMain)
         {
-            this.form1 = form1;
+            this.formMain = formMain;
         }
 
         public void Add(Controller controller)

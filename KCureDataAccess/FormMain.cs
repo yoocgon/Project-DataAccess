@@ -1,6 +1,5 @@
 
 using Microsoft.Web.WebView2.Core;
-using System;
 
 
 namespace KCureDataAccess
@@ -9,11 +8,13 @@ namespace KCureDataAccess
     {
         public Observer observer;
         public Controller controller;
-        private string urlPrefix = @"D:/workspaces/vs/web/";
+        public Config config;
 
         public MainForm()
         {
             InitializeComponent();
+            //
+            config = new Config();
             //
             observer = new Observer();
             observer.Add(this);
@@ -23,7 +24,7 @@ namespace KCureDataAccess
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            webView2.Source = new Uri(urlPrefix + "index.html");
+            webView2.Source = new Uri(config.webRoot + "login.html");
             webView2.WebMessageReceived += WebView2_WebMessageReceived;
         }
 
@@ -32,7 +33,10 @@ namespace KCureDataAccess
             try
             {
                 string strJson = e.WebMessageAsJson;
+
+                Console.WriteLine("\nDebug>>> Read Page JSON");
                 Console.WriteLine(strJson);
+
                 controller.Parse(strJson);
             }
             catch (Exception ex)
@@ -41,14 +45,19 @@ namespace KCureDataAccess
             }
         }
 
-        public void Listen(string type, string message, dynamic data)
+        public void Listener(string target, string action, string message, dynamic data)
         {
-            if (type == "page")
+            Console.WriteLine("\nDebug>>> MainForm Listner");
+            Console.WriteLine("(target) " + target);
+            Console.WriteLine("(action) " + action);
+            Console.WriteLine("(message) " + message);
+
+            if (target != "formMain")
+                return;
+
+            if (action == "page")
             {
-                if(message == "test")
-                {
-                    webView2.Source = new Uri(urlPrefix + "test.html");
-                }
+                webView2.Source = new Uri(config.webRoot + message + ".html");
             }
         }
     }
