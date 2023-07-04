@@ -10,7 +10,7 @@
             "relt"
             "foot";
         grid-template-columns: 100%;
-        grid-template-rows: 2em 3em 10em 28em 2em;
+        grid-template-rows: 2em 3em 5em 35em 2em;
         font-size: small;
     }
 
@@ -73,10 +73,10 @@
         border-radius: 3px;
     }
 
-        .area-filter select {
-            width: 12em;
-            height: 1.4em;
-        }
+    .area-filter select {
+        width: 12em;
+        height: 1.4em;
+    }
 
     .area-result {
         grid-area: relt;
@@ -95,19 +95,20 @@
         width: 100%;
         background: white;
         font-size: small;
+        font-weight: 200;
     }
 
-        #tb_result caption {
-            float: left;
-        }
+    #tb_result caption {
+        float: left;
+    }
 
-        #tb_result tr, th, td {
-            border-bottom: 2px solid #EEE;
-        }
+    #tb_result tr, th, td {
+        border-bottom: 2px solid #EEE;
+    }
 
-            #tb_result tr:hover {
-                background: #CCC;
-            }
+    #tb_result tr:hover {
+        background: #CCC;
+    }
 </style>
 
 
@@ -122,7 +123,7 @@
     </div>
 
     <div class="area-header">
-        <p class="title"> Main </p>
+        <p class="title"> 반출 데이터 신청 </p>
     </div>
 
     <div class="area-filter">
@@ -142,44 +143,10 @@
             <select id="selector-researcher-name"> <option>-</option> </select>
         </span>
 
-        <span>
-            <span>신청단계구분</span>
-            <select id="selector-apply-step"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>신청진행상태</span>
-            <select id="selector-apply-status"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>데이터반입여부</span>
-            <select id="selector-imported-data-exists"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>데이터반출신청여부</span>
-            <select id="selector-data-export-request-exists"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>데이터반출승인여부</span>
-            <select id="selector-data-export-approval-existence"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>데이터활용시작일자</span>
-            <select id="selector-data-utilization-start-date"> <option>-</option> </select>
-        </span>
-
-        <span>
-            <span>데이터활용종료일자</span>
-            <select id="selector-data-utilization-end-date"> <option>-</option> </select>
-        </span>
-
     </div>
 
     <div class="area-result">
+        <p>파일목록</p>
         <table id="tb_result"></table>
     </div>
 
@@ -208,12 +175,12 @@
     var dataResult = []
 
     dataResult = [
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
-        { id: 1, value: 10, timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
+        { id: 1, file: "C:/User/Document/test.txt", timestamp: '2023-06-01 00:00:00' },
     ]
 
     function renderTable() {
@@ -221,18 +188,17 @@
         let elemTable = document.getElementById("tb_result");
 
         let htmlFix = `
-            <caption>조회결과</caption>
             <tr>
-                <th>Num</th>
-                <th>예제값</th>
-                <th>날짜</th>
+                <th width="2%">No</th>
+                <th>파일</th>
+                <th width="20%">날짜</th>
             </tr>
         `
 
         let htmlRow = `
             <tr>
                 <th>{id}</th>
-                <th>{value}</th>
+                <th>{file}</th>
                 <th>{timestamp}</th>
             </tr>
         `
@@ -240,7 +206,7 @@
         let htmlStack = "";
         dataResult.forEach((item) => {
             let htmlTemp = htmlRow.replaceAll('{id}', item.id);
-            htmlTemp = htmlTemp.replaceAll('{value}', item.value);
+            htmlTemp = htmlTemp.replaceAll('{file}', item.file);
             htmlTemp = htmlTemp.replaceAll('{timestamp}', item.timestamp);
             htmlStack += htmlTemp;
         });
