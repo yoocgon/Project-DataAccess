@@ -43,7 +43,6 @@ namespace KCureDataAccess
            {
                 if (page == "login")
                 {
-
                     var objData = objJson["data"];
                     string id = (string)objData["id"];
                     string password = (string)objData["password"];
@@ -63,6 +62,43 @@ namespace KCureDataAccess
                     string dest = (string)objJson["dest"];
                     observer.Send("formMain", "page", dest, null);
                 }
+            }
+           else if(action == "api")
+            {
+                var objData = objJson["data"];
+                string department = (string)objData["department"];
+                Console.WriteLine("Debug>>> (department) : " + department);
+
+                List<Dictionary<String, String>> listDicData = new List<Dictionary<String, String>>();
+                Dictionary<String, String> dicData = new Dictionary<String, String>();
+                dicData.Add("id", "1");
+                dicData.Add("researchSubject", "개발 테스트 연구");
+                dicData.Add("department", "데이터스트림즈");
+                dicData.Add("researcher", "유창곤");
+                dicData.Add("applyStep", "1단계?");
+                dicData.Add("applyStatus", "심사중");
+                dicData.Add("importedDataExists", "Y");
+                dicData.Add("dataExportRequestExists", "Y");
+                dicData.Add("dataExportApprovalExistence", "Y");
+                dicData.Add("dataUtilizationStartDate", "2023-06-01 00:00:00");
+                dicData.Add("dataUtilizationEndDate", "2023-06-01 00:00:00");
+                listDicData.Add(dicData);
+
+                Dictionary<String, String> dicData2 = new Dictionary<String, String>();
+                dicData2.Add("id", "2");
+                dicData2.Add("researchSubject", "개발 테스트 연구");
+                dicData2.Add("department", "데이터스트림즈");
+                dicData2.Add("researcher", "유창곤");
+                dicData2.Add("applyStep", "1단계?");
+                dicData2.Add("applyStatus", "심사중");
+                dicData2.Add("importedDataExists", "Y");
+                dicData2.Add("dataExportRequestExists", "Y");
+                dicData2.Add("dataExportApprovalExistence", "Y");
+                dicData2.Add("dataUtilizationStartDate", "2023-06-01 00:00:00");
+                dicData2.Add("dataUtilizationEndDate", "2023-06-01 00:00:00");
+                listDicData.Add(dicData2);
+
+                observer.Send("formMain", "api", "", listDicData);
             }
         }
 

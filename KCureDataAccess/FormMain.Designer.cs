@@ -37,9 +37,11 @@
             webView2.AllowExternalDrop = true;
             webView2.CreationProperties = null;
             webView2.DefaultBackgroundColor = Color.White;
-            webView2.Location = new Point(0, 2);
+            webView2.Dock = DockStyle.Top;
+            webView2.Location = new Point(0, 0);
             webView2.Name = "webView2";
-            webView2.Size = new Size(1259, 758);
+            webView2.RightToLeft = RightToLeft.Yes;
+            webView2.Size = new Size(1482, 849);
             webView2.TabIndex = 0;
             webView2.ZoomFactor = 1D;
             // 
@@ -47,11 +49,12 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1260, 762);
+            ClientSize = new Size(1482, 853);
             Controls.Add(webView2);
             Name = "MainForm";
             Text = "K-CURE DataAccess";
             Load += MainForm_Load;
+            Resize += MainForm_Resize;
             ((System.ComponentModel.ISupportInitialize)webView2).EndInit();
             ResumeLayout(false);
         }

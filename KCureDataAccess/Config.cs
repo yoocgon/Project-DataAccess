@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace KCureDataAccess
 
         public Config()
         {
-            webRoot = @"D:/workspaces/vs/ProjectDataAccess/KCureDataAccess/web/";
+            //webRoot = @"D:/workspaces/vs/ProjectDataAccess/KCureDataAccess/web/";
+            webRoot = @"C:/Users/User/Workspaces/visualStudio/ProjectDataAccess/KCureDataAccess/web/";
         }
     }
 }

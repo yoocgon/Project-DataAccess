@@ -1,6 +1,7 @@
 
 using Microsoft.Web.WebView2.Core;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KCureDataAccess
 {
@@ -9,7 +10,7 @@ namespace KCureDataAccess
         public Observer observer;
         public Controller controller;
         public Config config;
-        public Store store;
+        public Store? store;
 
         public MainForm()
         {
@@ -27,6 +28,19 @@ namespace KCureDataAccess
         {
             webView2.Source = new Uri(config.webRoot + "01-login.html");
             webView2.WebMessageReceived += WebView2_WebMessageReceived;
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            int width = this.Width;
+            int height = this.Height;
+
+            //int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
+            //int scrollbarHeight = SystemInformation.HorizontalScrollBarHeight;
+            //width -= scrollbarWidth;
+            //height -= scrollbarHeight;
+
+            webView2.Size = new Size(width, height);
         }
 
         private void WebView2_WebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -59,6 +73,12 @@ namespace KCureDataAccess
             if (action == "page")
             {
                 webView2.Source = new Uri(config.webRoot + message + ".html");
+            }
+            else if(action == "api")
+            {
+                List<Dictionary<String, String>> listDicData = (List<Dictionary<String, String>>) data;
+                string jsonData = JsonSerializer.Serialize(listDicData);
+                webView2.CoreWebView2.ExecuteScriptAsync($"reciveUsersReserchData('{jsonData}');");
             }
         }
     }
