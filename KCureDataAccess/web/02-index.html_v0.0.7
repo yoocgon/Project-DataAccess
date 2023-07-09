@@ -1,0 +1,847 @@
+<style>
+
+  body {
+  margin: 0;
+  }
+
+  .wrapper {
+  display: grid;
+  grid-template-areas:
+  "stat"
+  "menu"
+  "head"
+  "fter"
+  "relt"
+  "detl"
+  "foot";
+  grid-template-columns: 100%;
+  grid-template-rows: 2em 4em 3em auto auto auto 2em;
+  font-size: small;
+  margin: 0%;
+  padding: 0%;
+  }
+
+  .area-stat {
+  grid-area: stat;
+  /*border-bottom: 1px solid #CCC;*/
+  /*border: 1px solid black;*/
+  }
+
+  .area-menu {
+  grid-area: menu;
+  display: flex;
+  justify-content: space-between;
+  background-color: #EEE;
+  color: gray;
+  border-bottom: 4px double #CCC;
+  padding-top: 1.4em;
+  padding-left: 2em;
+  padding-right: 2em;
+  color: #333;
+  }
+
+  .area-menu span:hover {
+  font-weight: 800;
+  color: black;
+  animation: ani-select-menu 0.2s;
+  font-size: larger;
+  }
+
+  @keyframes ani-select-menu {
+  0% {
+  font-size: small;
+  }
+
+  100% {
+  font-size: larger;
+  }
+  }
+
+  .area-header {
+  grid-area: head;
+  /*border: 1px dashed gray;*/
+  }
+
+  .area-header .title {
+  font-size: medium;
+  font-weight: 800;
+  margin-left: 0.8em;
+  color: black;
+  padding-left: 2px;
+  border-bottom: 1px solid black;
+  }
+
+  .area-filter {
+  grid-area: fter;
+  }
+
+  .contianer-filter {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 0.4em;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  padding: 1em;
+  background: #333;
+  color: white;
+  border-radius: 3px;
+  }
+
+  .lb-filter {
+  display: inline-block;
+  width: 10em;
+  margin-left: 1em;
+  }
+
+  #btn-search {
+  float: right;
+  margin: 1em;
+  }
+
+  .area-filter select {
+  width: 12.7em;
+  height: 1.4em;
+  }
+
+  .area-result {
+  grid-area: relt;
+  padding: 0.6em;
+  /*border: 1px dashed gray;*/
+  }
+
+  #pagenation {
+  float: right;
+  }
+
+  .btn-pagenation {
+  display: inline-block;
+  background: #CCC;
+  margin: 2px;
+  padding-bottom: 2px;
+  width: 2em;
+  border-radius: 4px;
+  text-align: center;
+  }
+
+  .btn-pagenation-selected {
+  display: inline-block;
+  background: #333;
+  color: white;
+  margin: 2px;
+  padding-bottom: 2px;
+  width: 2em;
+  border-radius: 4px;
+  text-align: center;
+  }
+
+  #lb-title {
+  margin-left: 1.2em;
+  margin-bottom: 0;
+  }
+
+  #area-detail {
+  grid-area: detl;
+  padding: 1em;
+  /*border: 1px dashed gray;*/
+  }
+
+  #contianer-detail {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin: 1em;
+  padding: 1em;
+  border: 1px double #DDD;
+  }
+
+  .lb-detail {
+  display: inline-block;
+  width: 10em;
+  font-weight: 800;
+  }
+
+  .tx-detail {
+  display: inline-block;
+  width: 18em;
+  }
+
+  .area-footer {
+  grid-area: foot;
+  /*border: 1px dashed gray;*/
+  /*border-top: 1px solid black;*/
+  background-color: #777;
+  color: silver;
+  }
+
+  #tb_result {
+  width: 100%;
+  background: white;
+  font-size: small;
+  font: normal 1px 100 verdana;
+  }
+
+  #tb_result th {
+  background: #CCC;
+  }
+
+  #tb_result tr {
+  border-bottom: 2px solid #EEE;
+  background: #EEE;
+  padding: 2px;
+  }
+
+  #tb_result tr:hover {
+  background: #222;
+  color: white;
+  }
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+  <script src="https://cdn.jsdelivr.net/npm/pikaday@1.8.0"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>-->
+
+  <div class="wrapper">
+
+    <div class="area-stat">
+      <span>상태</span>
+    </div>
+
+    <div class="area-menu">
+      <span id="btn-menu-main" onclick="btnMenu('02-index')">메인</span>
+      <span id="btn-menu-request" onclick="btnMenu('03-data-application')">신청 데이터 조회</span>
+      <span id="btn-menu-import" onclick="btnMenu('04-data-import')">반입 데이터 조회</span>
+      <span id="btn-menu-export" onclick="btnMenu('05-data-export-request')">반출 데이터 신청</span>
+      <span id="btn-menu-logout" onclick="btnMenu('01-login')">로그아웃</span>
+    </div>
+
+    <div class="area-header">
+      <p class="title"> Main </p>
+    </div>
+
+    <div class="area-filter">
+
+      <div class="contianer-filter">
+
+        <span>
+          <span class="lb-filter">연구주제명</span>
+          <select id="selector-research-subject">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter">참여기관명</span>
+          <select id="selector-department">
+            <option>-</option>
+          </select>
+        </span>
+
+        <!--<span>
+                <span class="lb-filter">연구자명</span>
+                <select id="selector-researcher"> <option>-</option> </select>
+            </span>-->
+
+        <span>
+          <span class="lb-filter">신청단계구분</span>
+          <select id="selector-apply-step">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter"> 신청진행상태</span>
+          <select id="selector-apply-status">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter">데이터반입여부</span>
+          <select id="selector-imported-data-exists">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter">데이터반출신청여부</span>
+          <select id="selector-data-export-request-exists">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter">데이터반출승인여부</span>
+          <select id="selector-data-export-approval-existence">
+            <option>-</option>
+          </select>
+        </span>
+
+        <span>
+          <span class="lb-filter">데이터활용시작일자</span>
+          <input type="text" id="selector-data-utilization-start-date">
+            </span>
+
+        <span>
+          <span class="lb-filter">데이터활용종료일자</span>
+          <input type="text" id="selector-data-utilization-end-date">
+            </span>
+      </div>
+
+      <input id="btn-search" type="button" value="조회" onclick="btnSearch()"/>
+    </div>
+
+    <div class="area-result">
+      <table id="tb_result"></table>
+      <div id="pagenation"></div>
+    </div>
+
+    <div class="area-detail">
+      <span id="lb-title">상세내용</span>
+      <div id="contianer-detail"></div>
+    </div>
+
+    <div class="area-footer">
+      <span id="logo-footer"></span>
+    </div>
+
+  </div>
+
+
+  <script>
+
+    function btnMenu(menu) {
+    //
+    jsonData = JSON.stringify(
+    {
+    page: 'main',
+    action: 'page',
+    dest: menu
+    }
+    );
+    //
+    let objData = JSON.parse(jsonData);
+    window.chrome.webview.postMessage(objData);
+    }
+
+    // 연구주제명          research-subject
+    // 참여기관명          department
+    // 연구자명            researcher
+    // 신청단계구분        apply-step
+    // 신청진행상태        apply-status
+    // 데이터반입여부      imported-data-exists
+    // 데이터반출신청여부  data-export-request-exists
+    // 데이터반출승인여부  data-export-approval-existence
+    // 데이터활용시작일자  data-utilization-start-date
+    // 데이터활용종료일자  data-utilization-end-date
+
+    var dataResult = []
+    dataResult = [
+    {
+    id: 1,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 2,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 3,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 4,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 5,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 6,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 7,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 8,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 9,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 10,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 11,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 12,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 13,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 14,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 15,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 16,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 17,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 18,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 19,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 20,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    },
+    {
+    id: 21,
+    researchSubject: "개발 테스트 연구",
+    department: "데이터스트림즈",
+    researcher: "유창곤",
+    applyStep: "1단계?",
+    applyStatus: "심사중",
+    importedDataExists: "Y",
+    dataExportRequestExists: "Y",
+    dataExportApprovalExistence: "Y",
+    dataUtilizationStartDate: "2023-06-01 00:00:00",
+    dataUtilizationEndDate: "2023-06-01 00:00:00"
+    }
+    ]
+
+    function btnSearch() {
+    let dateStart = pickerStart.getDate();
+    let date = new Date(dateStart);
+    let formattedDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    alert(formattedDate);
+    }
+
+    function selectRow(id) {
+
+    let htmlFormat = `
+    <div>
+      <span class="lb-detail">No.</span>
+      <span class="tx-detail">{id}</span>
+    </div>
+    <div>
+      <span class="lb-detail">연구주제명</span>
+      <span class="tx-detail">{researchSubject}</span>
+    </div>
+    <div>
+      <span class="lb-detail">참여기관명</span>
+      <span class="tx-detail">{department}</span>
+    </div>
+    <div>
+      <span class="lb-detail">연구자명</span>
+      <span class="tx-detail">{researcher}</span>
+    </div>
+    <div>
+      <span class="lb-detail">신청단계구분</span>
+      <span class="tx-detail">{applyStep}</span>
+    </div>
+    <div>
+      <span class="lb-detail">신청진행상태</span>
+      <span class="tx-detail">{applyStatus}</span>
+    </div>
+    <div>
+      <span class="lb-detail">데이터반입여부</span>
+      <span class="tx-detail">{importedDataExists}</span>
+    </div>
+    <div>
+      <span class="lb-detail">데이터반출신청여부</span>
+      <span class="tx-detail">{dataExportRequestExists}</span>
+    </div>
+    <div>
+      <span class="lb-detail">데이터반출승인여부</span>
+      <span class="tx-detail">{dataExportApprovalExistence}</span>
+    </div>
+    <div>
+      <span class="lb-detail">데이터활용시작일자</span>
+      <span class="tx-detail">{dataUtilizationStartDate}</span>
+    </div>
+    <div>
+      <span class="lb-detail">데이터활용종료일자</span>
+      <span class="tx-detail">{dataUtilizationEndDate}</span>
+    </div>
+    `
+
+    let item = dataResult.filter(x => x.id == id)[0];
+    let htmlTemp = htmlFormat.replaceAll("{id}", item.id);
+    htmlTemp.replaceAll("{department}", item.department);
+    htmlTemp = htmlTemp.replaceAll("{researcher}", item.researcher);
+    htmlTemp = htmlTemp.replaceAll("{researchSubject}", item.researchSubject);
+    htmlTemp = htmlTemp.replaceAll("{applyStep}", item.applyStep);
+    htmlTemp = htmlTemp.replaceAll("{applyStatus}", item.applyStatus);
+    htmlTemp = htmlTemp.replaceAll("{importedDataExists}", item.importedDataExists);
+    htmlTemp = htmlTemp.replaceAll("{dataExportRequestExists}", item.dataExportRequestExists);
+    htmlTemp = htmlTemp.replaceAll("{dataExportApprovalExistence}", item.dataExportApprovalExistence);
+    htmlTemp = htmlTemp.replaceAll("{dataUtilizationStartDate}", item.dataUtilizationStartDate);
+    htmlTemp = htmlTemp.replaceAll("{dataUtilizationEndDate}", item.dataUtilizationEndDate);
+
+    document.getElementById("contianer-detail").innerHTML = htmlTemp;
+    }
+
+
+    function btnPagenation(page) {
+
+    if (page <= 0)
+    page = 1;
+
+    if (page >= pagenationLastPage)
+    page = pagenationLastPage;
+
+    pagenationCurPage = page;
+    renderPagenation();
+    renderTable();
+    }
+
+
+    function renderPagenation() {
+    let htmlBase = `
+    <span class='btn-pagenation' onclick='btnPagenation(1)'>
+      <<
+    </span>
+    <span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage - 1)'>
+      <
+    </span>
+    {pages}
+    <span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage + 1)'> > </span>
+    <span class='btn-pagenation' onclick='btnPagenation(pagenationLastPage)'> >> </span>
+    `;
+
+    let htmlPage = "";
+    for (let i = 1; i <= pagenationLastPage; i++) {
+    if (i == pagenationCurPage)
+    htmlPage += "<span class='btn-pagenation-selected' onclick='btnPagenation(" + i + ")'>" + i + "</span>";
+    else
+    htmlPage += "<span class='btn-pagenation' onclick='btnPagenation(" + i + ")'>" + i + "</span>";
+    }
+
+    htmlPage = htmlBase.replaceAll('{pages}', htmlPage);
+    document.getElementById('pagenation').innerHTML = htmlPage;
+    }
+
+
+    var pagenationRowLimit = 10;
+    var pagenationLastPage = 0;
+    var pagenationCurPage = 1;
+
+    function renderTable() {
+
+    let htmlFix = `
+    <th>No</th>
+    <th>기관</th>
+    <th>연구제목</th>
+    <th>신청단계</th>
+    <th>신청진행상태</th>
+    <th>데이터반입</th>
+    <th>데이터반출신청</th>
+    <th>데이터반출승인</th>
+    <th>데이터활용시작일자</th>
+    <th>데이터활용종료일자</th>
+    `
+
+    let htmlRow = `
+    <tr onclick="selectRow({id})">
+      <td style="width:2em;text-align:center;">{id}</td>
+      <td>{department}</td>
+      <td>{researchSubject}</td>
+      <td style="text-align:center;">{applyStep}</td>
+      <td style="text-align:center;">{applyStatus}</td>
+      <td style="width:8em;text-align:center;">{importedDataExists}</td>
+      <td style="width:8em;text-align:center;">{dataExportRequestExists}</td>
+      <td style="width:8em;text-align:center;">{dataExportApprovalExistence}</td>
+      <td style="width:10em;text-align:center;">{dataUtilizationStartDate}</td>
+      <td style="width:10em;text-align:center;">{dataUtilizationEndDate}</td>
+    </tr>
+    `
+
+    pagenationLastPage = parseInt(dataResult.length / pagenationRowLimit);
+    if (dataResult.length % pagenationRowLimit > 0) {
+    pagenationLastPage += 1;
+    }
+
+    //alert("pagenationRowLimit : " + pagenationRowLimit);
+    //alert("pagenationCurPage : " + pagenationCurPage);
+    //alert("pagenationLastPage : " + pagenationLastPage);
+
+    let rowStart = (pagenationCurPage * pagenationRowLimit) - pagenationRowLimit + 1;
+    let rowEnd = rowStart + pagenationRowLimit - 1;
+    if (rowEnd >= dataResult.length) {
+    rowEnd = rowStart + dataResult.length % pagenationRowLimit;
+    }
+
+    //alert("rowStart : " + rowStart);
+    //alert("rowEnd : " + rowEnd);
+
+    let htmlStack = "";
+    for (let rowNum = rowStart; rowNum <= rowEnd; rowNum++)
+    {
+    if (rowNum == dataResult.length + 1)
+    break;
+
+    let item = dataResult[rowNum - 1];
+    let htmlTemp = htmlRow.replaceAll('{id}', item.id);
+    htmlTemp = htmlTemp.replaceAll('{department}', item.department);
+    htmlTemp = htmlTemp.replaceAll('{researchSubject}', item.researchSubject);
+    htmlTemp = htmlTemp.replaceAll('{applyStep}', item.applyStep);
+    htmlTemp = htmlTemp.replaceAll('{applyStatus}', item.applyStatus);
+    htmlTemp = htmlTemp.replaceAll('{importedDataExists}', item.importedDataExists);
+    htmlTemp = htmlTemp.replaceAll('{dataExportRequestExists}', item.dataExportRequestExists);
+    htmlTemp = htmlTemp.replaceAll('{dataExportApprovalExistence}', item.dataExportApprovalExistence);
+    htmlTemp = htmlTemp.replaceAll('{dataUtilizationStartDate}', item.dataUtilizationStartDate);
+    htmlTemp = htmlTemp.replaceAll('{dataUtilizationEndDate}', item.dataUtilizationEndDate);
+    htmlStack += htmlTemp;
+    }
+
+    let elemTable = document.getElementById("tb_result");
+    elemTable.innerHTML = htmlFix + htmlStack;
+    }
+
+    //var pickerStart = new Pikaday({ field: document.getElementById('selector-data-utilization-start-date') });
+    //var pickerEnd = new Pikaday({ field: document.getElementById('selector-data-utilization-end-date') });
+
+    var pickerStart = new Pikaday({
+    field: document.getElementById('selector-data-utilization-start-date'),
+    format: 'YYYY-MM-DD',
+    toString(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+    },
+    parse(dateString) {
+    const parts = dateString.split('/');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    return new Date(year, month, day);
+    }
+    });
+
+    var pickerEnd = new Pikaday({
+    field: document.getElementById('selector-data-utilization-end-date'),
+    format: 'YYYY-MM-DD',
+    toString(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+    },
+    parse(dateString) {
+    const parts = dateString.split('/');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    return new Date(year, month, day);
+    }
+    });
+
+    renderTable();
+    renderPagenation();
+
+  </script>
