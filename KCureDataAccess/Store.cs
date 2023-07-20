@@ -9,6 +9,9 @@ namespace KCureDataAccess
     public class Store
     {
         public string id {  get; set; }
-        public Store() { }
+        public Store() {
+
+            this.id = "유창곤";
+        }
     }
 }
