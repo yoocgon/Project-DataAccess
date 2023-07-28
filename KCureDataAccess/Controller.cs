@@ -25,7 +25,11 @@ namespace KCureDataAccess
         CustomDapperClient dapperClient;
         CustomPostgresClient postgresClient;
         //
+        CustomLibrary library;
+        //
         Test test = new Test();
+        //
+        ServiceIndex serviceIndex;
 
         public Controller(Observer observer, Config config)
         {
@@ -33,8 +37,13 @@ namespace KCureDataAccess
             this.observer.Add(this);
             //
             this.config = config;
+            this.library = new CustomLibrary(); 
             //
-            dapperClient = new CustomDapperClient(config);
+            this.dapperClient = new CustomDapperClient(config);
+            //
+            this.serviceIndex = new ServiceIndex();
+            this.serviceIndex.Library = this.library;
+            this.serviceIndex.DapperClient = this.dapperClient;
             //
             // PrivateKeyFile? kcureSvr = new PrivateKeyFile("");
             // sftpDataReqeusted = new Sftp("100.100.100.1", 22, "centos", "", kcureSvr);
@@ -100,67 +109,7 @@ namespace KCureDataAccess
                 if (objData == null)
                     return;
                 //
-                List<Dictionary<string, string>> listDicWhereCondition = new List<Dictionary<string, string>>();
-                if (objData is JsonObject dataObject)
-                {
-                    foreach (var keyValuePair in dataObject)
-                    {
-                        Dictionary<string, string> dicWhereCondition = new Dictionary<string, string>();
-                        string keyCamel = keyValuePair.Key;
-                        string keySnake = CamelToSnake(keyCamel);
-                        JsonNode? value = keyValuePair.Value;
-                        string? strValue = value?.GetValue<string>();
-                        if (strValue == null)
-                            return;
-                        //
-                        Console.WriteLine($"\nDEBUG>>> (Key) {keySnake} (Value) {value}");
-                        //
-                        if (keyCamel == "researcher")
-                        {
-                            strValue = store.id;
-                            dicWhereCondition.Add("type", "text");
-                            dicWhereCondition.Add("expression", $" AND {keySnake} = @{keySnake}");
-                        }
-                        else if (keyCamel == "importedDataExists" || keyCamel == "dataExportRequestExists" || keyCamel == "dataExportApprovalExistence")
-                        {
-                            dicWhereCondition.Add("type", "bool");
-                            dicWhereCondition.Add("expression", $" AND {keySnake} = @{keySnake}");
-                        }
-                        else if (keyCamel == "dataUtilizationStartDate")
-                        {
-                            dicWhereCondition.Add("type", "timestamp");
-                            dicWhereCondition.Add("expression", $" AND {keySnake} >= @{keySnake}");
-                            if (strValue == "1970-1-1")
-                                strValue = "-";
-                        }
-                        else if (keyCamel == "dataUtilizationEndDate")
-                        {
-                            dicWhereCondition.Add("type", "timestamp");
-                            dicWhereCondition.Add("expression", $" AND {keySnake} <= @{keySnake}");
-                            if (strValue == "1970-1-1")
-                                strValue = "-";
-                        }
-                        else
-                        {
-                            dicWhereCondition.Add("type", "text");
-                            dicWhereCondition.Add("expression", $" AND {keySnake} = @{keySnake}");
-                        }
-                        //
-                        dicWhereCondition.Add("variable", keySnake);
-                        dicWhereCondition.Add("value", strValue);
-                        dicWhereCondition.Add("exception", "-");
-                        //
-                        listDicWhereCondition.Add(dicWhereCondition);
-                    }
-                }
-                else if (objData is JsonArray dataArray)
-                {
-                    Console.WriteLine("\nDEBUG>>> (exception) objData is a JsonArray");
-                }
-                //
-                List<Dictionary<string, object>> listDicQueryResult = dapperClient.FilterSelect("tb_test", "*", listDicWhereCondition);
-                List<Dictionary<string, object>> listDicTemp = SnakeKeyToCamelKey(listDicQueryResult);
-                List<Dictionary<string, object>> listDicData = PostSelectFilter(listDicTemp);
+                List<Dictionary<string, object>> listDicData = serviceIndex.GetUsers((JsonObject) objData, store);
                 //
                 // List<Dictionary<string, object>> listDicData = new List<Dictionary<string, object>>();
                 // Dictionary<string, object> dicData1 = new Dictionary<string, object>();
@@ -212,60 +161,6 @@ namespace KCureDataAccess
             Console.WriteLine("(target) " + target);
             Console.WriteLine("(action) " + action);
             Console.WriteLine("(message) " + message);
-        }
-
-        public string CamelToSnake(string camelCase)
-        {
-            return string.Concat(camelCase.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
-        }
-            
-        public List<Dictionary<string, object>> SnakeKeyToCamelKey(List<Dictionary<string, object>> listDicData)
-        {
-            List<Dictionary<string, object>> listDicCamelKey = new List<Dictionary<string, object>>();
-            //
-            if (listDicData != null)
-            {
-                foreach (var dic in listDicData)
-                {
-                    var newDic = new Dictionary<string, object>();
-                    foreach (var key in dic.Keys)
-                    {
-                        var newKey = string.Concat(key.Split('_').Select((x, i) => i > 0 ? char.ToUpper(x[0]) + x.Substring(1) : x));
-                        newDic.Add(newKey, dic[key]);
-                    }
-                    // listDicData[listDicData.IndexOf(dic)] = newDic;
-                    listDicCamelKey.Add(newDic);
-                }
-            }
-            //
-            return listDicCamelKey;
-        }
-
-        public List<Dictionary<string, object>> PostSelectFilter(List<Dictionary<string, object>> listDicData)
-        {
-            List<Dictionary<string, object>> listDicPostData = new List<Dictionary<string, object>>();
-            foreach (var dic in listDicData)
-            {
-                var newDic = new Dictionary<string, object>();
-                foreach (var item in dic)
-                {
-                    string newValue = "";
-                    if (item.Value == null)
-                        newValue = "";
-                    else if (item.Value.GetType().Name == "Boolean" && (bool)item.Value)
-                        newValue = "Y";
-                    else if (item.Value.GetType().Name == "Boolean" && !(bool)item.Value)
-                        newValue = "N";
-                    else
-                        newValue = item.Value.ToString();
-                    //
-                    newDic.Add(item.Key, newValue);
-                }
-                //
-                listDicPostData.Add(newDic);
-            }
-            //
-            return listDicPostData;
         }
     }
 }

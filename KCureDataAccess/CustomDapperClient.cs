@@ -154,5 +154,33 @@ namespace KCureDataAccess
             }
         }
 
+        public List<Dictionary<string, object>> PostSelectFilter(List<Dictionary<string, object>> listDicData)
+        {
+            List<Dictionary<string, object>> listDicPostData = new List<Dictionary<string, object>>();
+            foreach (var dic in listDicData)
+            {
+                var newDic = new Dictionary<string, object>();
+                foreach (var item in dic)
+                {
+                    string newValue = "";
+                    if (item.Value == null)
+                        newValue = "";
+                    else if (item.Value.GetType().Name == "Boolean" && (bool)item.Value)
+                        newValue = "Y";
+                    else if (item.Value.GetType().Name == "Boolean" && !(bool)item.Value)
+                        newValue = "N";
+                    else
+                        newValue = item.Value.ToString();
+                    //
+                    newDic.Add(item.Key, newValue);
+                }
+                //
+                listDicPostData.Add(newDic);
+            }
+            //
+            return listDicPostData;
+        }
+
+
     }
 }
