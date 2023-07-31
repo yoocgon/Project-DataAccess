@@ -14,11 +14,14 @@ namespace KCureDataAccess
 
         public Config()
         {
-            webRoot = @"D:/workspaces/vs/ProjectDataAccess/KCureDataAccess/web/";
+            webRoot = @"C:/Users/gony/Desktop/ECRF/ProjectDataAccess/KCureDataAccess/web/";
+            // webRoot = @"D:/workspaces/vs/ProjectDataAccess/KCureDataAccess/web/";
             // webRoot = @"C:/Users/User/Workspaces/visualStudio/ProjectDataAccess/KCureDataAccess/web/";
             //
+
+            dapperConnStr = "Server=127.0.0.1;Port=5432;User Id=kcure;Password=kcure;Database=kcure;";
             // dapperConnStr = "Server=127.0.0.1;Port=5433;User Id=gony;Password=asdf;Database=kcure;";
-            dapperConnStr = "Server=127.0.0.1;Port=5432;User Id=gony;Password=asdf;Database=kcure;";
+            // dapperConnStr = "Server=127.0.0.1;Port=5432;User Id=gony;Password=asdf;Database=kcure;";
             // dapperConnStr = "Server=127.0.0.1;Port=5432;User Id=postgres;Database=postgres;";
         }
     }

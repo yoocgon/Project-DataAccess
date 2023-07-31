@@ -11,7 +11,7 @@ namespace KCureDataAccess
         public string id {  get; set; }
         public Store() {
 
-            this.id = "유창곤";
+            this.id = "gony";
         }
     }
 }
