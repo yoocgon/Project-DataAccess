@@ -41,7 +41,7 @@
             webView2.Location = new Point(0, 0);
             webView2.Name = "webView2";
             webView2.RightToLeft = RightToLeft.Yes;
-            webView2.Size = new Size(1482, 849);
+            webView2.Size = new Size(1482, 854);
             webView2.TabIndex = 0;
             webView2.ZoomFactor = 1D;
             // 
@@ -52,7 +52,7 @@
             ClientSize = new Size(1482, 853);
             Controls.Add(webView2);
             Name = "MainForm";
-            Text = "K-CURE DataAccess";
+            Text = "K-CURE | eCRF Viewer";
             Load += MainForm_Load;
             Resize += MainForm_Resize;
             ((System.ComponentModel.ISupportInitialize)webView2).EndInit();

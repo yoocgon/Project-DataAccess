@@ -11,7 +11,12 @@ namespace KCureDataAccess
         public string id {  get; set; }
         public Store() {
 
-            this.id = "gony";
+            // VBox
+            // this.id = "gony";
+
+            // MSI
+            this.id = "유창곤";
+
         }
     }
 }

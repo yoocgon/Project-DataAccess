@@ -40,11 +40,11 @@
         color: blue;
         font-size: larger;
         font-weight: 800;
-        margin-left: 1.8em;
+        margin-left: 3em;
     }
 
-    #data-access {
-        color: silver;
+    #ecrf {
+        color: red;
         font-size: medium;
     }
 
@@ -86,7 +86,7 @@
 <div class="wrapper">
     <div class="left">
         <div class="box-login">
-            <div> <span id="kcure">K-CURE</span> <span id="data-access">DataAccess</span> </div>
+            <div> <span id="kcure">K-CURE</span> <span id="ecrf">eCRF</span> </div>
             <br />
             <div> <input id="id" type="text" placeholder="email" /> </div>
             <br />
@@ -94,7 +94,7 @@
             <br />
             <div> <input type="button" value="login" onclick='login()' /> </div>
             <br />
-            <p id="notice">카카오톡, 네이버, 디지털 원패스로 가입하신 분들은 회원 가입시 설정한 외부연동 비밀번호를 입력하세요.</p>
+            <p id="notice"></p>
         </div>
     </div>
     <div class="right"></div>

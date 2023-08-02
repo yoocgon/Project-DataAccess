@@ -9,8 +9,8 @@ namespace KCureDataAccess
 {
     public class ServiceIndex
     {
-        public CustomDapperClient DapperClient { get; set; }
-        public CustomLibrary Library { get; set; }
+        public CustomDapperClient? DapperClient { get; set; }
+        public CustomLibrary? Library { get; set; }
 
         public List<Dictionary<string, object>> GetUsers(JsonObject dataObject, Store store)
         {
@@ -66,11 +66,19 @@ namespace KCureDataAccess
                 listDicWhereCondition.Add(dicWhereCondition);
             }
             //
-            List<Dictionary<string, object>> listDicQueryResult = DapperClient.FilterSelect("tb_test", "*", listDicWhereCondition);
+            List<Dictionary<string, object>> listDicQueryResult = DapperClient.SelectUsingFilter("tb_test", "*", listDicWhereCondition);
             List<Dictionary<string, object>> listDicTemp = Library.SnakeKeyToCamelKey(listDicQueryResult);
             List<Dictionary<string, object>> listDicData = DapperClient.PostSelectFilter(listDicTemp);
             //
             return listDicData;
         }
+
+        public List<Dictionary<string, object>> GetInfoTable(string schema, string table)
+        {
+            List<Dictionary<string, object>> listDicColumnInfo = DapperClient.GetPostgresTableColumnInfo(schema, table);
+            DapperClient.SetColumnFilterValues(listDicColumnInfo, schema, table);
+            return listDicColumnInfo;
+        }
+
     }
 }

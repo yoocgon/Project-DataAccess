@@ -54,25 +54,25 @@
         color: #fff;
     }
 
-    .area-menu span:hover {
-        justify-content: center;
-        align-items: center;
-        transform: scale(1.3);
-        transition: all 0.1s ease-in-out;
-    }
+        .area-menu span:hover {
+            justify-content: center;
+            align-items: center;
+            transform: scale(1.3);
+            transition: all 0.1s ease-in-out;
+        }
 
     .area-header {
         grid-area: head;
     }
 
-    .area-header .title {
-        font-size: medium;
-        font-weight: 800;
-        margin-left: 0.8em;
-        padding-left: 2px;
-        border-bottom: 1px double #999;
-        color: #777;
-    }
+        .area-header .title {
+            font-size: medium;
+            font-weight: 800;
+            margin-left: 0.8em;
+            padding-left: 2px;
+            border-bottom: 1px double #999;
+            color: #777;
+        }
 
     #lb-title {
         margin-left: 1.2em;
@@ -130,21 +130,21 @@
         font: normal 1px 100 verdana;
     }
 
-    #tb_result th {
-        background: #333;
-        color: #fff;
-    }
+        #tb_result th {
+            background: #333;
+            color: #fff;
+        }
 
-    #tb_result tr {
-        border-bottom: 2px solid #eee;
-        background: #eee;
-        padding: 2px;
-    }
+        #tb_result tr {
+            border-bottom: 2px solid #eee;
+            background: #eee;
+            padding: 2px;
+        }
 
-    #tb_result tr:hover {
-        background: #999;
-        color: #fff;
-    }
+            #tb_result tr:hover {
+                background: #999;
+                color: #fff;
+            }
 
     #pagenation {
         float: right;
@@ -202,7 +202,6 @@
         grid-area: foot;
         color: #fff;
     }
-
 </style>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
@@ -312,6 +311,17 @@
 
 <script>
 
+    //
+    function log(category, log, type) {
+        console.log("Debug>>> (" + category + ") \n");
+
+        if (type === "table")
+            console.table(log);
+        else
+            console.log(log);
+    }
+
+    //
     function btnMenu(menu) {
         //
         jsonData = JSON.stringify(
@@ -368,36 +378,16 @@
     }
 
 
-    function selectRow(id) {
-
-        let htmlFormat = `
-<div> <span class="lb-detail">No.</span> <span class="tx-detail">{id}</span> </div>
-<div> <span class="lb-detail">기관</span> <span class="tx-detail">{department}</span> </div>
-<div> <span class="lb-detail">연구주제명</span> <span class="tx-detail">{research}</span> </div>
-<div> <span class="lb-detail">참여기관명</span> <span class="tx-detail">{department}</span> </div>
-<div> <span class="lb-detail">연구자명</span> <span class="tx-detail">{researcher}</span> </div>
-<div> <span class="lb-detail">신청단계구분</span> <span class="tx-detail">{applyStep}</span> </div>
-<div> <span class="lb-detail">신청진행상태</span> <span class="tx-detail">{applyStatus}</span> </div>
-<div> <span class="lb-detail">데이터반입여부</span> <span class="tx-detail">{importedDataExists}</span> </div>
-<div> <span class="lb-detail">데이터반출신청여부</span> <span class="tx-detail">{dataExportRequestExists}</span> </div>
-<div> <span class="lb-detail">데이터반출승인여부</span> <span class="tx-detail">{dataExportApprovalExistence}</span> </div>
-<div> <span class="lb-detail">데이터활용시작일자</span> <span class="tx-detail">{dataUtilizationStartDate}</span> </div>
-<div> <span class="lb-detail">데이터활용종료일자</span> <span class="tx-detail">{dataUtilizationEndDate}</span> </div>
-`
-
-        let item = dataResult.filter(x => x.id == id)[0];
-        let htmlTemp = htmlFormat.replaceAll("{id}", item.id);
-        htmlTemp = htmlTemp.replaceAll("{department}", item.department);
-        htmlTemp = htmlTemp.replaceAll("{researcher}", item.researcher);
-        htmlTemp = htmlTemp.replaceAll("{research}", item.research);
-        htmlTemp = htmlTemp.replaceAll("{applyStep}", item.applyStep);
-        htmlTemp = htmlTemp.replaceAll("{applyStatus}", item.applyStatus);
-        htmlTemp = htmlTemp.replaceAll("{importedDataExists}", item.importedDataExists);
-        htmlTemp = htmlTemp.replaceAll("{dataExportRequestExists}", item.dataExportRequestExists);
-        htmlTemp = htmlTemp.replaceAll("{dataExportApprovalExistence}", item.dataExportApprovalExistence);
-        htmlTemp = htmlTemp.replaceAll("{dataUtilizationStartDate}", item.dataUtilizationStartDate);
-        htmlTemp = htmlTemp.replaceAll("{dataUtilizationEndDate}", item.dataUtilizationEndDate);
-
+    function selectRow(rowNum) {
+        //
+        let row = dataResult[rowNum - 1];
+        console.log("select row", rowNum, "");
+        console.log("select row", row, "");
+        //
+        let htmlTemp = "";
+        for (let key in row)
+            htmlTemp += `<div> <span class="lb-detail">` + key + `</span> <span class="tx-detail">` + row[key] + `</span> </div>`;
+        //
         document.getElementById("contianer-detail").innerHTML = htmlTemp;
     }
 
@@ -417,13 +407,14 @@
 
 
     function renderPagenation() {
+        //
         let htmlBase = `
-<span class='btn-pagenation' onclick='btnPagenation(1)'> << </span>
-<span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage - 1)'> < </span>
-{pages}
-<span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage + 1)'> > </span>
-<span class='btn-pagenation' onclick='btnPagenation(pagenationLastPage)'> >> </span>
-`;
+            <span class='btn-pagenation' onclick='btnPagenation(1)'> << </span>
+            <span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage - 1)'> < </span>
+            {pages}
+            <span class='btn-pagenation' onclick='btnPagenation(pagenationCurPage + 1)'> > </span>
+            <span class='btn-pagenation' onclick='btnPagenation(pagenationLastPage)'> >> </span>
+            `;
 
         let htmlPage = "";
         for (let i = 1; i <= pagenationLastPage; i++) {
@@ -442,75 +433,62 @@
     var pagenationLastPage = 0;
     var pagenationCurPage = 1;
 
+    //
+    function renderTableHeader() {
+        //
+        log("dataResult[0]", dataResult[0], "table");
+        //
+        let htmlTh = "";
+        for (let key in dataResult[0])
+            htmlTh += "<th>" + key + "</th>";
+        //
+        return htmlTh;
+    }
+
+    //
     function renderTable() {
-
-        let htmlFix = `
-<th>No</th>
-<th>기관</th>
-<th>연구제목</th>
-<th>신청단계</th>
-<th>신청진행상태</th>
-<th>데이터반입</th>
-<th>데이터반출신청</th>
-<th>데이터반출승인</th>
-<th>데이터활용시작일자</th>
-<th>데이터활용종료일자</th>
-`
-
-        let htmlRow = `
-<tr onclick="selectRow({id})">
-    <td style="width:2em;text-align:center;">{id}</td>
-    <td>{department}</td>
-    <td>{research}</td>
-    <td style="text-align:center;">{applyStep}</td>
-    <td style="text-align:center;">{applyStatus}</td>
-    <td style="width:8em;text-align:center;">{importedDataExists}</td>
-    <td style="width:8em;text-align:center;">{dataExportRequestExists}</td>
-    <td style="width:8em;text-align:center;">{dataExportApprovalExistence}</td>
-    <td style="width:10em;text-align:center;">{dataUtilizationStartDate}</td>
-    <td style="width:10em;text-align:center;">{dataUtilizationEndDate}</td>
-</tr>
-`
-
+        //
+        log("table", dataResult, "table");
+        //
+        let htmlTh = renderTableHeader();
+        //
         pagenationLastPage = parseInt(dataResult.length / pagenationRowLimit);
-        if (dataResult.length % pagenationRowLimit > 0) {
+        if (dataResult.length % pagenationRowLimit > 0)
             pagenationLastPage += 1;
-        }
-
-        //alert("pagenationRowLimit : " + pagenationRowLimit);
-        //alert("pagenationCurPage : " + pagenationCurPage);
-        //alert("pagenationLastPage : " + pagenationLastPage);
+        //
+        log("pagenationRowLimit", pagenationRowLimit, "");
+        log("pagenationCurPage", pagenationCurPage, "");
+        log("pagenationLastPage : ", pagenationLastPage, "");
 
         let rowStart = (pagenationCurPage * pagenationRowLimit) - pagenationRowLimit + 1;
         let rowEnd = rowStart + pagenationRowLimit - 1;
-        if (rowEnd >= dataResult.length) {
+        if (rowEnd >= dataResult.length)
             rowEnd = rowStart + dataResult.length % pagenationRowLimit;
-        }
-
-        //alert("rowStart : " + rowStart);
-        //alert("rowEnd : " + rowEnd);
-
+        //
+        log("rowStart : ", rowStart, "");
+        log("rowEnd : ", rowEnd, "");
+        //
         let htmlStack = "";
         for (let rowNum = rowStart; rowNum <= rowEnd; rowNum++) {
+            //
             if (rowNum == dataResult.length + 1)
                 break;
-
+            //
             let item = dataResult[rowNum - 1];
-            let htmlTemp = htmlRow.replaceAll('{id}', item.id);
-            htmlTemp = htmlTemp.replaceAll('{department}', item.department);
-            htmlTemp = htmlTemp.replaceAll('{research}', item.research);
-            htmlTemp = htmlTemp.replaceAll('{applyStep}', item.applyStep);
-            htmlTemp = htmlTemp.replaceAll('{applyStatus}', item.applyStatus);
-            htmlTemp = htmlTemp.replaceAll('{importedDataExists}', item.importedDataExists);
-            htmlTemp = htmlTemp.replaceAll('{dataExportRequestExists}', item.dataExportRequestExists);
-            htmlTemp = htmlTemp.replaceAll('{dataExportApprovalExistence}', item.dataExportApprovalExistence);
-            htmlTemp = htmlTemp.replaceAll('{dataUtilizationStartDate}', item.dataUtilizationStartDate);
-            htmlTemp = htmlTemp.replaceAll('{dataUtilizationEndDate}', item.dataUtilizationEndDate);
-            htmlStack += htmlTemp;
+            log("row", item, "");
+            //
+            htmlStack += `<tr onclick="selectRow(` + rowNum + `)">`;
+            for (let key in item) {
+                log("key", key, "");
+                let column = item[key];
+                log("column", column, "");
+                htmlStack += ` <td> ` + column + ` </td> `;
+            }
+            htmlStack += `</tr>`;
         }
-
+        //
         let elemTable = document.getElementById("tb_result");
-        elemTable.innerHTML = htmlFix + htmlStack;
+        elemTable.innerHTML = htmlTh + htmlStack;
     }
 
 
@@ -691,12 +669,14 @@
 
 
     function init() {
+        //
         fetchHello();
         fetchFtpStatus();
         fetchresearch();
         fetchDepartment();
         fetchApplyStep();
         fetchApplyStatus();
+        //
         let filter = {
             research: "-",
             department: "-",

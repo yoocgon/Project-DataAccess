@@ -27,7 +27,7 @@ namespace KCureDataAccess
         private void MainForm_Load(object sender, EventArgs e)
         {
             webView2.Source = new Uri(config.webRoot + "01-login.html");
-         
+
             //string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             //string relativePath = @"web/01-login.html";
             //string fullPath = Path.Combine(baseDirectory, relativePath);
@@ -96,6 +96,12 @@ namespace KCureDataAccess
                 List<Dictionary<string, object>> listDicData = (List<Dictionary<string, object>>)data;
                 string jsonData = JsonSerializer.Serialize(listDicData);
                 webView2.CoreWebView2.ExecuteScriptAsync($"fetchUsersReserchData('{jsonData}', undefined);");
+            }
+            else if (action == "api-info-table")
+            {
+                List<Dictionary<string, object>> listDicData = (List<Dictionary<string, object>>)data;
+                string jsonData = JsonSerializer.Serialize(listDicData);
+                webView2.CoreWebView2.ExecuteScriptAsync($"fetchGetTableInfo('{jsonData}', undefined);");
             }
         }
     }
